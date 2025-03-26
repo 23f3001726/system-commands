@@ -238,10 +238,31 @@ done
 	- Returns control to the shell with exit status
 	- Example [eval-example.sh](Example_Files/eval-example.sh)
 * function 
-	- Example [function-example.sh](Example_Files/function-example.sh)
+	- Function Calls
+
+```bash
+#!/bin/bash
+usage()
+{
+	echo usage $1 str1 str2
+}
+
+swap()
+{
+	echo $2 $1
+}
+
+if [ $# -lt 2 ]
+then
+	usage $0
+	exit 1
+fi
+
+swap $1 $2
+```
+
 * getopts
 	- This script can be invoked with only three options: `a`, `b`, `c`. The options `b` and `c` will take arguments.
-	- Example [getopts-example.sh](Example_Files/getopts-example.sh)
 
 ```bash
 while getopts "ab:c:" options;
@@ -267,7 +288,7 @@ done
 
 * select loop
 	- Text Menu
-	- Example [select-example.sh](Example_Files/select-example.sh)
+
 ```bash
 echo select a middle one
 select i in {1..10}
