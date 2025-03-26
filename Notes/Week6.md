@@ -11,7 +11,21 @@
 * Combining conditions
   - `[ $a -gt 3 ] && [ $a -gt 7 ]`
   - `[ $a -lt 3 ] || [ $a -gt 7 ]`
-  - Example [condition-examples.sh](Example_Files/condition-examples.sh)
+```bash
+#!/bin/bash
+for i in {1..9}
+do
+	echo $i
+	if [ $i -le 3 ] || [ $i -ge 7 ] 
+	then
+		echo $i is out of range
+	fi
+	if [ $i -gt 3 ] && [ $i -lt 7 ] 
+	then
+		echo $i is in the range
+	fi
+done
+```
 
 * Shell arithmetic
 	- Using `let`
@@ -27,7 +41,46 @@
 	- Using `$(( expression ))`
 		- `b=$(( $a + 10 ))`
 		- `(( b++ ))`- Without $. Not intending to return. Useful for incrementing
-	- Example [arithmetic-example-1.sh](Example_Files/arithmetic-example-1.sh)
+```bash
+#!/bin/bash
+
+if [ $# -lt 2 ]
+then
+	echo use with two natural numbers as arguments
+	exit 1
+fi
+
+re='^[0-9]+$'
+if ! [[ $1 =~ $re ]]
+then
+	echo $1 is not a natural number
+	exit 1
+fi
+
+if ! [[ $2 =~ $re ]]
+then
+	echo $2 is not a natural number
+	exit 1
+fi
+
+let a=$1*$2
+echo product a is $a
+(( a++ ))
+echo product a incremented is $a
+
+let b=$1**$2
+echo power is $b
+
+c=$[ $1 + $2 + 10]
+echo sum+10 is $c
+
+d=$(expr $1 + $2 + 20)
+echo sum+20 is $d
+
+f=$(( $1 * $2 * 2 ))
+echo product times 2 is $f
+```
+
 * ### expr command operators
 
 | Expression  | Description  |
@@ -53,7 +106,67 @@
 |	`+ token`	|	Interpret token as string even if its a keyword	|
 |	`(exprn)`	|	Return the value of expression exprn	|
 
-* Example [expr-examples.sh](Example_Files/expr-examples.sh)
+```bash
+#!/bin/bash
+set -x
+a=256
+b=4
+c=3
+
+ans=$( expr $a + $b )
+echo $ans
+
+ans=$( expr $a - $b )
+echo $ans
+
+ans=$( expr $a \* $b )
+echo $ans
+
+ans=$( expr $a / $b )
+echo $ans
+
+ans=$( expr $a % $c )
+echo $ans
+
+ans=$( expr $a \> $b )
+echo $ans
+
+ans=$( expr $b \>= $a )
+echo $ans
+
+ans=$( expr $a \< $b )
+echo $ans
+
+ans=$( expr $b \<= $a )
+echo $ans
+
+ans=$( expr $a = $b )
+echo $ans
+
+ans=$( expr $a != $b )
+echo $ans
+
+ans=$( expr $a \| $b )
+echo $ans
+
+ans=$( expr $a \& $b )
+echo $ans
+
+str="octavio version as in Jan 2022 is 6.4.0"
+reg="[oO]ctav[aeiou]*"
+ans=$( expr "$str" : $reg )
+echo $ans
+
+ans=$( expr substr "$str" 1 6 )
+echo $ans
+
+ans=$( expr index "$str" "vw")
+echo $ans
+
+ans=$( expr length "$str")
+echo $ans
+
+```
 
 * Bench Calculator 
 	- An arbitaty preciscion calculator language
@@ -64,13 +177,46 @@
 	
 * heredoc feature 
 	- helps while passing long strings without having to worry about `\n` etc.
-	- Example [heredoc-example-1.sh](Example_Files/heredoc-example-1.sh)
-	- Example [heredoc-example-2.sh](Example_Files/heredoc-example-2.sh)
+```bash
+#!/bin/bash
+a=2.5
+b=3.2
+c=4
+d=$(bc -l << EOF
+scale=5
+($a+$b)^$c
+EOF
+)
+echo $d
+```
+```bash
+#!/bin/bash
+a=2.5
+b=3.2
+c=4
+d=$(bc -l <<- ABC
+	scale=5
+	($a+$b)^$c
+	ABC
+)
+echo $d
+```
 	- A hyphen tells bash to ignore leading tabs
 	
 * PATH variable
-	- Example [path-example.sh](Example_Files/path-example.sh)
-		- IFS (Internal Field Seperator)
+	- IFS (Internal Field Seperator)
+```bash
+#!/bin/bash
+set -x
+echo path is set as $PATH
+i=0
+IFS=:
+for n in $PATH
+do
+	echo $i $n
+	(( i++ ))
+done
+```
 ___ 
 L6.3
 
@@ -236,7 +382,13 @@ done
 	- Execute argument as a shell command
 	- Combines arguments into a single string
 	- Returns control to the shell with exit status
-	- Example [eval-example.sh](Example_Files/eval-example.sh)
+```bash
+#!/bin/bash
+cmd="date"
+fmt="+%d-%B-%Y"
+eval $cmd $fmt
+```
+
 * function 
 	- Function Calls
 
