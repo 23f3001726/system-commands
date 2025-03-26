@@ -503,7 +503,18 @@ L6.4
 		```
 		
 * Examples
-	- [block-ex-1.awk](Example_Files/block-ex-1.awk)
+	- `
+#!/usr/bin/gawk -f
+BEGIN{
+	print "BEGIN action is processed";
+}
+{
+	print "Default action is processed";
+}
+END{
+	print "END action is processed";
+}
+`
 		- `./block-ex-1.awk block-ex-1.input`
 		- `cat block-ex-1.input | ./block-ex-1.awk`
 		- For each line Default block will be processed once. 
@@ -607,12 +618,82 @@ L6.4
 |	bit-wise	|	`and` `compl` `lshift` `or` `rshift` `xor`	|
 
 * Example 
-	- [block-ex-2.awk](Example_Files/block-ex-2.awk)
-	- [block-ex-3.awk](Example_Files/block-ex-3.awk)
+	- `
+#!/usr/bin/gawk -f
+BEGIN{
+	print "BEGIN action is processed";
+}
+{
+	print "record:" $0;
+	print "processing record number:" FNR;
+	print "number of fields in the current record:" NF;
+}
+END{
+	print "END action is processed";
+}
+`
+	- `
+#!/usr/bin/gawk -f
+BEGIN{
+	print "BEGIN action is processed";
+}
+/[[:alpha:]]/ {
+	print "alpha record:" FNR ":" $0;
+	print "number of fields in the current record:" NF;
+}
+/[[:alnum:]]/ {
+	print "alnum record:" FNR ":" $0;
+	print "number of fields in the current record:" NF;
+}
+/[[:digit:]]/ {
+	print "digit record:" FNR ":" $0;
+	print "number of fields in the current record:" NF;
+}
+END{
+	print "END action is processed";
+}
+`
 		- Blocks get executed based on whether the line has `alpha`,`alnum` or `digits`
-	- [block-ex-4.awk](Example_Files/block-ex-4.awk)
+	- `
+#!/usr/bin/gawk -f
+BEGIN{
+	print "BEGIN action is processed";
+}
+$1 ~ /[[:alpha:]]/ {
+	print "alpha record:" FNR ":" $0;
+	print "number of fields in the current record:" NF;
+}
+$1 ~ /[[:alnum:]]/ {
+	print "alnum record:" FNR ":" $0;
+	print "number of fields in the current record:" NF;
+}
+$1 ~ /[[:digit:]]/ {
+	print "digit record:" FNR ":" $0;
+	print "number of fields in the current record:" NF;
+}
+END{
+	print "END action is processed";
+}
+`
 		- Matching only the first field in the record with a pattern
-	- [block-ex-5.awk](Example_Files/block-ex-5.awk)
+	- `
+#!/usr/bin/gawk -f
+BEGIN{
+	print "BEGIN action is processed";
+	FS="[ .;:-]"
+}
+NF > 2 {
+	print "acceptable record:" FNR ":" $0;
+	print "number of fields in the current record:" NF;
+}
+NF <= 2 {
+	print "not acceptable record:" FNR ":" $0;
+	print "number of fields in the current record:" NF;
+}
+END{
+	print "END action is processed";
+}
+`
 		- Field Separator as regular expression
 		- Number of fields as condition 
 ___
@@ -658,7 +739,38 @@ L6.4
 	} while (a<n)
 	```
 * Example 
-	- [block-ex-6.awk](Example_Files/block-ex-6.awk)
+	- `
+#!/usr/bin/gawk -f
+BEGIN{
+	print "Report of fee paid:";
+	totfee=0
+	FS=" "
+}
+{
+	# print $0
+	if ($1 ~ /[[:alpha:]]{2}[[:digit:]]{2}[[:alpha:]][[:digit:]]{3}+/) {
+		roll=$1
+		fee=$2
+		rf[roll]=fee
+		totfee += fee
+		print roll " paid " fee
+	}
+}
+END{
+	cutoff=21500
+	print "List of students who paid less than " cutoff
+	ns=0
+	for (r in rf)
+	{
+		ns++
+		if(rf[r] < cutoff) print "check ", r, " paid only " rf[r]
+	}
+	avg = totfee/ns
+	print "Total fee collected:" totfee
+	print "Average fee collected:" avg
+}
+`
+
 * #### Functions
 	- `cat infile |awk -f mylib -f myscript.awk`
 	- `mylib`
@@ -685,8 +797,40 @@ L6.4
 	}
 	```
 * Example 
-	- [func-example.awk](Example_Files/func-example.awk)
-	- [func-lib.awk](Example_Files/func-lib.awk)
+	- `
+#!/usr/bin/gawk -f
+BEGIN {
+	FS=":"
+	print "-----------begin----------"
+	c=atan2(1,1)
+	print "c=" c
+	print "--------------------------"
+}
+{
+	print $0
+	myfunc1()
+	a=$1
+	b=myfunc2(a)
+	print "b=" b
+}
+END {
+	print "------------end-----------"
+	d=myfunc2(c)
+	print "d=" d
+	print "--------------------------"
+}
+`
+	- `
+function myfunc1()
+{
+	printf "%f\n", 2*$1
+}
+function myfunc2(a)
+{
+	b=a+0
+	return sin(b)
+}
+`
 
 * #### Pretty printing
 	- `printf "format", a, b, c`
