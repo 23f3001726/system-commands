@@ -859,12 +859,44 @@ function myfunc2(a)
 	- Including awk inside shell script
 	- heredoc feature
 	- Use with other shell scripts on command line using pipe
-* Examples 
+* Examples
 	- Spreadsheet handling efficiency demo
-	- [rsheet-create.awk](Example_Files/rsheet-create.awk)
+```awk
+#!/usr/bin/gawk -f
+BEGIN{
+	nl = 2000000
+	nc = 2
+	for (j=0; j<nl; j++) {
+		for (i=0; i<nc; i++) {
+			printf("%f ", rand())
+		}
+		printf("\n")
+	}
+}
+{
+}
+END{
+	#print nl " lines with " nc " columns of random numbers created"
+}
+
+```
 	- `echo " " | ./rsheet-create.awk`
 	- Time the process for 2 million records `time ./rsheet-create.awk emptyfile > rsheet-data.txt`
-	- [rsheet-process.awk](Example_Files/rsheet-process.awk)
+**
+```awk
+#!/usr/bin/gawk -f 
+BEGIN{
+	OFS=" "
+	FS=" "
+}
+{
+	a = $1*$2
+	b = $1+$2
+	printf("%f %f %f %f\n", $1, $2, a, b)
+}
+END{
+}
+```
 	- `time ./rsheet-process.awk rsheet-data.txt > rsheet-pdata.txt`
 	- Analysing the server logs of [https://semantic.iitm.ac.in/](https://semantic.iitm.ac.in/)
 	- [access-full.log](Example-Files/access-full.log) (80MB)
@@ -874,10 +906,77 @@ function myfunc2(a)
 	- To print only the date and ip `awk BEGIN{FS=" "}{d=substr($4,2,11);print d, $1} access-head.log`
 	- The date from 5 days ago - `date --date="5 days ago" +%d/%m/%Y`
 	- Use the above date string to extract details from the Apache log book
-	- [apache-log-example-1.awk](Example_Files/apache-log-example-1.awk)
+```awk
+#!/usr/bin/gawk -f
+BEGIN{
+	ndays=5
+	dformat="+%d/%b/%Y"
+	for (i=0; i<ndays; i++) {
+		cmdstr=sprintf("date --date=\"%d days ago\" %s", i, dformat)
+		cmdstr | getline mydate
+		dates[i]=mydate
+	}
+	dstring = ""
+	for (i in dates) {
+		dstring = dstring " " dates[i]
+	}
+	print "date string=" dstring
+}
+{
+	ldate=substr($4,2,11)
+	w = match(dstring,ldate)
+	if(w != 0) {
+		#print ldate " " $1 " " $7
+		print ldate " " $1
+		ipcount[$1]++
+	}
+}
+END{
+	print "ip stats-----------------------------------"
+	for (j in ipcount) {
+		print j " "ipcount[j]
+	}
+}
+
+```
 	- `./apache-log-example-1.awk access-head.log`
 	- Investigate a suspicious ip address using `dig`
 	- `dig -x 136.123.209.54`
 	- `dig +noall +answer -x 34.234.167.93` for a one line output
-	- [apache-log-example-2.awk](Example_Files/apache-log-example-2.awk)
+```awk
+#!/usr/bin/gawk -f
+BEGIN{
+	ndays=5
+	dformat="+%d/%b/%Y"
+	for (i=0; i<ndays; i++) {
+		cmdstr=sprintf("date --date=\"%d days ago\" %s", i, dformat)
+		cmdstr | getline mydate
+		dates[i]=mydate
+	}
+	dstring = ""
+	for (i in dates) {
+		dstring = dstring " " dates[i]
+	}
+	print "date string=" dstring
+}
+{
+	ldate=substr($4,2,11)
+	w = match(dstring,ldate)
+	if(w != 0) {
+		#print ldate " " $1 " " $7
+		print ldate " " $1
+		ipcount[$1]++
+	}
+}
+END{
+	print "ip stats-----------------------------------"
+	for (j in ipcount) {
+		print j " " ipcount[j]
+		cmdstr = sprintf("dig +noall +answer -x %s", j)
+		cmdstr | getline ipinfo
+		print ipinfo
+	}
+}
+
+```
 	- `time ./apache-log-example-2.awk access-full.log > nstats.txt`
