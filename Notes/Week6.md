@@ -503,7 +503,13 @@ L6.4
 		```
 		
 * Examples
-	- `
+		- `./block-ex-1.awk block-ex-1.input`
+		- `cat block-ex-1.input | ./block-ex-1.awk`
+		- For each line Default block will be processed once. 
+		- You can have as many begin and end blocks wherever required in the awk script. BEGIN will be processed before the default block and and END will be processed after the default block.
+		- We don't need `;` at the end of every statement unless you need to write multiple statements on a single line.
+		- `$0` represents the line(record) which is currently being processed. 
+```awk
 #!/usr/bin/gawk -f
 BEGIN{
 	print "BEGIN action is processed";
@@ -514,13 +520,7 @@ BEGIN{
 END{
 	print "END action is processed";
 }
-`
-		- `./block-ex-1.awk block-ex-1.input`
-		- `cat block-ex-1.input | ./block-ex-1.awk`
-		- For each line Default block will be processed once. 
-		- You can have as many begin and end blocks wherever required in the awk script. BEGIN will be processed before the default block and and END will be processed after the default block.
-		- We don't need `;` at the end of every statement unless you need to write multiple statements on a single line.
-		- `$0` represents the line(record) which is currently being processed. 
+```
 	
 * Built-in variables
 
@@ -618,7 +618,7 @@ END{
 |	bit-wise	|	`and` `compl` `lshift` `or` `rshift` `xor`	|
 
 * Example 
-	- `
+```awk
 #!/usr/bin/gawk -f
 BEGIN{
 	print "BEGIN action is processed";
@@ -631,8 +631,10 @@ BEGIN{
 END{
 	print "END action is processed";
 }
-`
-	- `
+```
+
+		- Blocks get executed based on whether the line has `alpha`,`alnum` or `digits`
+```awk
 #!/usr/bin/gawk -f
 BEGIN{
 	print "BEGIN action is processed";
@@ -652,9 +654,10 @@ BEGIN{
 END{
 	print "END action is processed";
 }
-`
-		- Blocks get executed based on whether the line has `alpha`,`alnum` or `digits`
-	- `
+```
+
+		- Matching only the first field in the record with a pattern
+```awk
 #!/usr/bin/gawk -f
 BEGIN{
 	print "BEGIN action is processed";
@@ -674,9 +677,11 @@ $1 ~ /[[:digit:]]/ {
 END{
 	print "END action is processed";
 }
-`
-		- Matching only the first field in the record with a pattern
-	- `
+```
+
+		- Field Separator as regular expression
+		- Number of fields as condition 
+```awk
 #!/usr/bin/gawk -f
 BEGIN{
 	print "BEGIN action is processed";
@@ -693,9 +698,8 @@ NF <= 2 {
 END{
 	print "END action is processed";
 }
-`
-		- Field Separator as regular expression
-		- Number of fields as condition 
+```
+
 ___
 L6.4
 
@@ -797,7 +801,7 @@ END{
 	}
 	```
 * Example 
-	- `
+```awk
 #!/usr/bin/gawk -f
 BEGIN {
 	FS=":"
@@ -819,8 +823,8 @@ END {
 	print "d=" d
 	print "--------------------------"
 }
-`
-	- `
+```
+```awk
 function myfunc1()
 {
 	printf "%f\n", 2*$1
@@ -830,7 +834,7 @@ function myfunc2(a)
 	b=a+0
 	return sin(b)
 }
-`
+```
 
 * #### Pretty printing
 	- `printf "format", a, b, c`
