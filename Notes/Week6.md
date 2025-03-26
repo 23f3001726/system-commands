@@ -21,6 +21,7 @@
 		- `expr $a +20`
 		- `expr "$a + 20"`
 		- `b=$( expr $a + 20 )`
+  		- Need to escape meta characters using `\`
 	- Using `$[ expression ]`
 		- `b=$[ $a + 10 ]`
 	- Using `$(( expression ))`
