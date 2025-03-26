@@ -743,7 +743,7 @@ L6.4
 	} while (a<n)
 	```
 * Example 
-	- `
+```awk
 #!/usr/bin/gawk -f
 BEGIN{
 	print "Report of fee paid:";
@@ -773,7 +773,7 @@ END{
 	print "Total fee collected:" totfee
 	print "Average fee collected:" avg
 }
-`
+```
 
 * #### Functions
 	- `cat infile |awk -f mylib -f myscript.awk`
