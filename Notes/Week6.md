@@ -177,6 +177,7 @@ echo $ans
 	
 * heredoc feature 
 	- helps while passing long strings without having to worry about `\n` etc.
+	- A hyphen tells bash to ignore leading tabs
 ```bash
 #!/bin/bash
 a=2.5
@@ -201,7 +202,6 @@ d=$(bc -l <<- ABC
 )
 echo $d
 ```
-	- A hyphen tells bash to ignore leading tabs
 	
 * PATH variable
 	- IFS (Internal Field Seperator)
@@ -298,6 +298,7 @@ done > $filename
 
 * break
 	- Break out of inner loop
+	- Use `digit` after break to get out of multiple loops
 ```bash
 n=10
 i=0
@@ -311,7 +312,6 @@ do
 	fi
 done
 ```
-	- Break out of outer loop
 ```bash
 n=10
 i=0
